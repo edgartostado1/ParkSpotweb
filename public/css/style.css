@@ -343,3 +343,13 @@ a.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); bord
     .main-nav { order: 3; width: 100%; margin: 10px 0 0; }
     .site-footer { justify-content: center; text-align: center; }
 }
+
+/* Pantallas pequenas (celular) */
+@media (max-width: 560px) {
+    .form-row { grid-template-columns: 1fr; }   /* campos en una columna */
+    .content { padding: 24px 16px; }
+    .auth-form-side { padding: 24px 18px; }
+    .page-head h1, .welcome-card h1 { font-size: 1.4rem; }
+    .parking-map { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; }
+    .topbar { padding: 14px 18px; }
+}
