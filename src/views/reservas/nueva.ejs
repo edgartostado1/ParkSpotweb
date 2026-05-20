@@ -1,0 +1,63 @@
+<%- include('../partials/header') %>
+<div class="app-shell">
+    <%- include('../partials/nav', { user, activo: 'estacionamientos' }) %>
+
+    <main class="content content-narrow">
+        <div class="page-head">
+            <a href="/estacionamientos/<%= espacio.id_estacionamiento %>" class="back-link">&larr; Volver al mapa</a>
+            <h1>Reservar espacio <%= espacio.numero_espacio %></h1>
+            <p class="muted">
+                <%= espacio.nombre_estacionamiento %> ·
+                <%= espacio.nombre_tipo %>
+                <% if (espacio.precio_hora) { %> · $<%= espacio.precio_hora %> / hora<% } %>
+            </p>
+        </div>
+
+        <% if (flash.error) { %>
+            <div class="alert alert-error"><%= flash.error %></div>
+        <% } %>
+
+        <div class="panel-card">
+            <% if (vehiculos.length === 0) { %>
+                <div class="alert alert-error">
+                    No tienes vehiculos registrados.
+                    <a href="/vehiculos">Registra uno aqui</a> antes de reservar.
+                </div>
+            <% } else { %>
+                <form action="/reservas" method="POST">
+                    <input type="hidden" name="id_espacio" value="<%= espacio.id_espacio %>">
+
+                    <div class="form-group">
+                        <label for="id_vehiculo">Vehiculo</label>
+                        <select id="id_vehiculo" name="id_vehiculo" required>
+                            <% vehiculos.forEach(function(v) { %>
+                                <option value="<%= v.id_vehiculo %>">
+                                    <%= v.placa %> <%= v.marca ? '- ' + v.marca : '' %> <%= v.modelo || '' %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fecha_reserva">Fecha</label>
+                        <input type="date" id="fecha_reserva" name="fecha_reserva" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="hora_inicio">Hora inicio</label>
+                            <input type="time" id="hora_inicio" name="hora_inicio" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hora_fin">Hora fin</label>
+                            <input type="time" id="hora_fin" name="hora_fin" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn">Confirmar reserva</button>
+                </form>
+            <% } %>
+        </div>
+    </main>
+</div>
+<%- include('../partials/footer') %>
