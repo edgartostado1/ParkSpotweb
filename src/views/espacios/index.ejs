@@ -1,0 +1,56 @@
+<%- include('../partials/header') %>
+<div class="app-shell">
+    <%- include('../partials/nav', { user, activo: 'espacios' }) %>
+
+    <main class="content">
+        <div class="page-head row-between">
+            <div>
+                <h1>Gestion de espacios</h1>
+                <p class="muted">Crea, edita o elimina los espacios del estacionamiento.</p>
+            </div>
+            <a href="/admin/espacios/nuevo" class="btn btn-inline">+ Nuevo espacio</a>
+        </div>
+
+        <% if (flash.success) { %><div class="alert alert-success"><%= flash.success %></div><% } %>
+        <% if (flash.error) { %><div class="alert alert-error"><%= flash.error %></div><% } %>
+
+        <% if (espacios.length === 0) { %>
+            <div class="empty">No hay espacios. Crea el primero con el boton de arriba.</div>
+        <% } else { %>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Numero</th>
+                            <th>Estacionamiento</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% espacios.forEach(function(s) {
+                             var bc = s.estado === 'Disponible' ? 'badge-libre'
+                                    : (s.estado === 'Ocupado' ? 'badge-ocupado' : 'badge-reservado');
+                        %>
+                            <tr>
+                                <td><strong><%= s.numero_espacio %></strong></td>
+                                <td><%= s.nombre_estacionamiento %></td>
+                                <td><%= s.nombre_tipo %></td>
+                                <td><span class="badge <%= bc %>"><%= s.estado %></span></td>
+                                <td class="actions">
+                                    <a href="/admin/espacios/<%= s.id_espacio %>/editar" class="btn-mini">Editar</a>
+                                    <form action="/admin/espacios/<%= s.id_espacio %>/eliminar" method="POST"
+                                          onsubmit="return confirm('¿Eliminar el espacio <%= s.numero_espacio %>?');">
+                                        <button class="btn-mini btn-danger">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </main>
+</div>
+<%- include('../partials/footer') %>
