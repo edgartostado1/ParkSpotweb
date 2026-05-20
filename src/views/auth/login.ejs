@@ -1,0 +1,56 @@
+<%- include('../partials/header') %>
+
+<div class="auth-wrapper">
+
+    <!-- Panel izquierdo: branding -->
+    <div class="auth-hero">
+        <div class="logo">
+            <span class="logo-badge">P</span> ParkSpot
+        </div>
+        <h1>Gestiona tu estacionamiento sin complicaciones.</h1>
+        <p>Reservas, espacios y pagos en una sola plataforma moderna, rapida y segura.</p>
+        <div class="features">
+            <div class="feature"><span class="dot">&check;</span> Control de espacios en tiempo real</div>
+            <div class="feature"><span class="dot">&check;</span> Reservas y tickets digitales</div>
+            <div class="feature"><span class="dot">&check;</span> Reportes para administradores</div>
+        </div>
+    </div>
+
+    <!-- Panel derecho: formulario -->
+    <div class="auth-form-side">
+        <div class="auth-card">
+            <h2>Bienvenido de nuevo</h2>
+            <p class="subtitle">Inicia sesion para continuar en ParkSpot.</p>
+
+            <% if (flash.error) { %>
+                <div class="alert alert-error"><%= flash.error %></div>
+            <% } %>
+            <% if (flash.success) { %>
+                <div class="alert alert-success"><%= flash.success %></div>
+            <% } %>
+
+            <form action="/login" method="POST" id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="correo">Correo electronico</label>
+                    <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
+                    <div class="field-error" data-for="correo"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contrasena">Contrasena</label>
+                    <input type="password" id="contrasena" name="contrasena" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required>
+                    <div class="field-error" data-for="contrasena"></div>
+                </div>
+
+                <button type="submit" class="btn">Iniciar sesion</button>
+            </form>
+
+            <p class="auth-switch">
+                ¿No tienes cuenta? <a href="/register">Registrate aqui</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="/js/validations.js"></script>
+<%- include('../partials/footer') %>

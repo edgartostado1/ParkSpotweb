@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+
+<div class="app-shell">
+    <header class="topbar">
+        <div class="brand"><span class="logo-badge">P</span> ParkSpot</div>
+        <div class="user-box">
+            <span class="role-chip">Administrador</span>
+            <span><%= user.nombre %> <%= user.apellido %></span>
+            <a class="logout-link" href="/logout">Cerrar sesion</a>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="welcome-card">
+            <h1>Panel de Administrador</h1>
+            <p>Hola <%= user.nombre %>, desde aqui gestionaras todo ParkSpot.</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="stat-card">
+                <div class="icon">&#128101;</div>
+                <h3>Usuarios</h3>
+                <p>Administra cuentas y roles.</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">&#128661;</div>
+                <h3>Espacios</h3>
+                <p>Controla disponibilidad y estado.</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">&#128197;</div>
+                <h3>Reservas</h3>
+                <p>Supervisa reservas activas.</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">&#128202;</div>
+                <h3>Reportes</h3>
+                <p>Genera informes de ocupacion e ingresos.</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<%- include('../partials/footer') %>

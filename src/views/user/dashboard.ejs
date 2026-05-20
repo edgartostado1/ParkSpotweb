@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+
+<div class="app-shell">
+    <header class="topbar">
+        <div class="brand"><span class="logo-badge">P</span> ParkSpot</div>
+        <div class="user-box">
+            <span class="role-chip">Usuario</span>
+            <span><%= user.nombre %> <%= user.apellido %></span>
+            <a class="logout-link" href="/logout">Cerrar sesion</a>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="welcome-card">
+            <h1>¡Hola, <%= user.nombre %>! &#128075;</h1>
+            <p>Bienvenido a tu panel de ParkSpot. Aqui podras gestionar tus reservas y vehiculos.</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="stat-card">
+                <div class="icon">&#128663;</div>
+                <h3>Mis vehiculos</h3>
+                <p>Registra y administra tus autos.</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">&#128197;</div>
+                <h3>Mis reservas</h3>
+                <p>Consulta y crea nuevas reservas.</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">&#127915;</div>
+                <h3>Mis tickets</h3>
+                <p>Accede a tus tickets digitales.</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">&#128179;</div>
+                <h3>Pagos</h3>
+                <p>Revisa tu historial de pagos.</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<%- include('../partials/footer') %>

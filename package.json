@@ -1,0 +1,19 @@
+{
+  "name": "parkspot",
+  "version": "1.0.0",
+  "description": "ParkSpot - Sistema de gestion de estacionamiento (Node.js + Express + SQL Server)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "mssql": "^11.0.1",
+    "msnodesqlv8": "^4.2.1"
+  }
+}

@@ -1,0 +1,79 @@
+<%- include('../partials/header') %>
+
+<div class="auth-wrapper">
+
+    <!-- Panel izquierdo: branding -->
+    <div class="auth-hero">
+        <div class="logo">
+            <span class="logo-badge">P</span> ParkSpot
+        </div>
+        <h1>Crea tu cuenta y empieza a estacionar mejor.</h1>
+        <p>Unete a ParkSpot y administra tus reservas de estacionamiento desde cualquier lugar.</p>
+        <div class="features">
+            <div class="feature"><span class="dot">&check;</span> Registro rapido y gratuito</div>
+            <div class="feature"><span class="dot">&check;</span> Tus datos protegidos</div>
+            <div class="feature"><span class="dot">&check;</span> Acceso a tu panel personal</div>
+        </div>
+    </div>
+
+    <!-- Panel derecho: formulario -->
+    <div class="auth-form-side">
+        <div class="auth-card">
+            <h2>Crear cuenta</h2>
+            <p class="subtitle">Completa tus datos para registrarte.</p>
+
+            <% if (flash.error) { %>
+                <div class="alert alert-error"><%= flash.error %></div>
+            <% } %>
+
+            <form action="/register" method="POST" id="registerForm" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Juan" required>
+                        <div class="field-error" data-for="nombre"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido</label>
+                        <input type="text" id="apellido" name="apellido" placeholder="Perez" required>
+                        <div class="field-error" data-for="apellido"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="correo">Correo electronico</label>
+                    <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
+                    <div class="field-error" data-for="correo"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">Telefono <span style="font-weight:400;color:var(--text-muted)">(opcional)</span></label>
+                    <input type="tel" id="telefono" name="telefono" placeholder="+52 55 1234 5678">
+                    <div class="field-error" data-for="telefono"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contrasena">Contrasena</label>
+                        <input type="password" id="contrasena" name="contrasena" placeholder="Minimo 8 caracteres" required>
+                        <div class="field-error" data-for="contrasena"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmar">Confirmar</label>
+                        <input type="password" id="confirmar" name="confirmar" placeholder="Repite la contrasena" required>
+                        <div class="field-error" data-for="confirmar"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Crear cuenta</button>
+            </form>
+
+            <p class="auth-switch">
+                ¿Ya tienes cuenta? <a href="/login">Inicia sesion</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="/js/validations.js"></script>
+<%- include('../partials/footer') %>
