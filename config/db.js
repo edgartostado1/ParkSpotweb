@@ -1,42 +1,49 @@
 /**
  * config/db.js
  * ---------------------------------------------------------------------------
- * Conexion a SQL Server usando AUTENTICACION DE WINDOWS (Trusted_Connection)
- * a traves del driver "msnodesqlv8". No requiere usuario ni contrasena:
- * usa la cuenta de Windows con la que inicias sesion (igual que en SSMS).
+ * Conexion a SQL Server usando autenticacion SQL (usuario + contrasena).
+ * Sirve tanto para local (SQL Server / SQL Express) como para la nube
+ * (Azure SQL Database). El driver es "mssql" (tedious), 100% JavaScript:
+ * no requiere ODBC ni binarios nativos, asi que tambien funciona en el
+ * runner de GitHub Actions y en Azure App Service Linux.
  *
- * El controlador ODBC se toma de DB_ODBC_DRIVER (.env) para que coincida con
- * el que tengas instalado. Valores tipicos:
- *   - "SQL Server"                  (viene incluido en todo Windows)
- *   - "ODBC Driver 17 for SQL Server"
- *   - "ODBC Driver 18 for SQL Server"
+ * Los datos se leen de .env. Variables soportadas:
+ *   DB_HOST       Servidor (ej: localhost  o  parkspot.database.windows.net)
+ *   DB_PORT       Puerto (1433 por defecto)
+ *   DB_NAME       Nombre de la base de datos
+ *   DB_USER       Usuario SQL (ej: sa, parkspot, etc.)
+ *   DB_PASS       Contrasena
+ *   DB_INSTANCE   (opcional) Instancia con nombre, ej: SQLEXPRESS
+ *   DB_ENCRYPT    "true" en Azure / "false" en local (por defecto: false)
+ *   DB_TRUST_CERT "true" en local con cert. autofirmado (por defecto: true)
  * ---------------------------------------------------------------------------
  */
 
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 
-// Datos desde el .env
-const host = process.env.DB_HOST || 'localhost';
-const instance = process.env.DB_INSTANCE || '';
-const dbName = process.env.DB_NAME || 'ParkSpot';
-const odbcDriver = process.env.DB_ODBC_DRIVER || 'SQL Server';
+const config = {
+  server: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '1433', 10),
+  database: process.env.DB_NAME || 'ParkSpot',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  options: {
+    encrypt: process.env.DB_ENCRYPT === 'true',
+    trustServerCertificate: process.env.DB_TRUST_CERT !== 'false',
+    enableArithAbort: true,
+  },
+  pool: {
+    max: 10,
+    min: 0,
+    idleTimeoutMillis: 30000,
+  },
+};
 
-// Nombre del servidor: host + instancia (ej: localhost\SQLEXPRESS)
-const serverName = instance ? `${host}\\${instance}` : host;
-
-// Cadena de conexion ODBC. "Trusted_Connection=yes" = autenticacion de Windows.
-let connectionString =
-  `Driver={${odbcDriver}};` +
-  `Server=${serverName};` +
-  `Database=${dbName};` +
-  `Trusted_Connection=yes;`;
-
-// TrustServerCertificate solo lo entienden los drivers "ODBC Driver 17/18".
-if (/ODBC Driver/i.test(odbcDriver)) {
-  connectionString += 'TrustServerCertificate=yes;';
+// Soporte opcional para instancia con nombre (ej: localhost\SQLEXPRESS).
+// Si la usas, el servicio "SQL Server Browser" debe estar corriendo en Windows.
+if (process.env.DB_INSTANCE) {
+  config.options.instanceName = process.env.DB_INSTANCE;
 }
-
-const config = { connectionString };
 
 let pool = null;
 
@@ -48,7 +55,6 @@ async function getPool() {
     return pool;
   } catch (err) {
     console.error('Error de conexion a SQL Server:', err.message);
-    console.error('Cadena usada:', connectionString);
     throw err;
   }
 }

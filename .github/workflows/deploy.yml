@@ -1,0 +1,55 @@
+# .github/workflows/deploy.yml
+# ===========================================================================
+#  Pipeline CI/CD de ParkSpot  (modo self-hosted runner local)
+#
+#  Como funciona:
+#   1) Disparador: cada push a "main" o "develop", o PRs hacia esas ramas.
+#   2) Build: instala dependencias y valida que el codigo no tenga errores.
+#   3) Deploy: SOLO cuando llega a "main" mediante un push, reinicia la app
+#      en TU laptop usando PM2. No publica a internet: la app se actualiza
+#      localmente y la ves en http://localhost:3000.
+#
+#  Requisitos en tu PC (se configuran una sola vez):
+#   - PM2 instalado globalmente:  npm install -g pm2
+#   - Un GitHub Actions self-hosted runner registrado y ejecutandose.
+#   - El archivo .env presente en la carpeta de trabajo del runner.
+# ===========================================================================
+
+name: Pipeline ParkSpot (local)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  # ---- Un solo job que hace TODO en tu laptop (runner local) ----
+  ci-cd:
+    runs-on: self-hosted          # <-- ejecutar en tu PC, no en la nube de GitHub
+    steps:
+      # 1) Detecta y descarga el codigo de la rama
+      - name: 1) Descargar el codigo
+        uses: actions/checkout@v4
+        with:
+          clean: false            # conserva .env y node_modules entre ejecuciones
+
+      # 2) Instala/actualiza dependencias
+      - name: 2) Instalar dependencias
+        run: npm install
+
+      # 3) Valida la sintaxis del servidor (equivale a "compilar")
+      - name: 3) Validar sintaxis
+        run: node --check app.js
+
+      # 4) Despliega localmente: solo cuando los cambios entran a main por push
+      - name: 4) Reiniciar app con PM2 (solo en main)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        shell: powershell
+        run: |
+          # Si la app ya esta corriendo en PM2 con el nombre "parkspot", la recarga
+          # con el codigo nuevo. Si no existe todavia, la inicia por primera vez.
+          pm2 reload parkspot
+          if ($LASTEXITCODE -ne 0) { pm2 start app.js --name parkspot }
+          pm2 save
