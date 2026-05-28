@@ -1,41 +1,34 @@
 <%- include('../partials/header') %>
 
 <div class="app-shell">
-    <header class="topbar">
-        <div class="brand"><span class="logo-badge">P</span> ParkSpot</div>
-        <div class="user-box">
-            <span class="role-chip">Usuario</span>
-            <span><%= user.nombre %> <%= user.apellido %></span>
-            <a class="logout-link" href="/logout">Cerrar sesion</a>
-        </div>
-    </header>
+    <%- include('../partials/nav', { user, activo: 'panel' }) %>
 
     <main class="content">
         <div class="welcome-card">
             <h1>¡Hola, <%= user.nombre %>! &#128075;</h1>
-            <p>Bienvenido a tu panel de ParkSpot. Aqui podras gestionar tus reservas y vehiculos.</p>
+            <p>Bienvenido a ParkSpot. Reserva un espacio en pocos pasos.</p>
         </div>
 
         <div class="cards-grid">
-            <div class="stat-card">
+            <a class="stat-card" href="/estacionamientos">
+                <div class="icon">&#128661;</div>
+                <h3>Reservar</h3>
+                <p>Ver estacionamientos y espacios libres.</p>
+            </a>
+            <a class="stat-card" href="/reservas">
+                <div class="icon">&#128197;</div>
+                <h3>Mis reservas</h3>
+                <p>Consulta o cancela tus reservas.</p>
+            </a>
+            <a class="stat-card" href="/vehiculos">
                 <div class="icon">&#128663;</div>
                 <h3>Mis vehiculos</h3>
                 <p>Registra y administra tus autos.</p>
-            </div>
-            <div class="stat-card">
-                <div class="icon">&#128197;</div>
-                <h3>Mis reservas</h3>
-                <p>Consulta y crea nuevas reservas.</p>
-            </div>
+            </a>
             <div class="stat-card">
                 <div class="icon">&#127915;</div>
                 <h3>Mis tickets</h3>
-                <p>Accede a tus tickets digitales.</p>
-            </div>
-            <div class="stat-card">
-                <div class="icon">&#128179;</div>
-                <h3>Pagos</h3>
-                <p>Revisa tu historial de pagos.</p>
+                <p>Proximamente: tickets digitales.</p>
             </div>
         </div>
     </main>

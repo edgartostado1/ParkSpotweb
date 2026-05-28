@@ -1,0 +1,69 @@
+<%- include('../partials/header') %>
+<%
+   // Si "espacio" existe, es edicion; si es null, es creacion.
+   var esEdicion = !!espacio;
+   var accion = esEdicion ? ('/admin/espacios/' + espacio.id_espacio) : '/admin/espacios';
+   var estados = ['Disponible', 'Ocupado', 'Reservado'];
+%>
+<div class="app-shell">
+    <%- include('../partials/nav', { user, activo: 'espacios' }) %>
+
+    <main class="content content-narrow">
+        <div class="page-head">
+            <a href="/admin/espacios" class="back-link">&larr; Volver</a>
+            <h1><%= esEdicion ? 'Editar espacio' : 'Nuevo espacio' %></h1>
+        </div>
+
+        <% if (flash.error) { %><div class="alert alert-error"><%= flash.error %></div><% } %>
+
+        <div class="panel-card">
+            <form action="<%= accion %>" method="POST">
+                <div class="form-group">
+                    <label for="numero_espacio">Numero / etiqueta del espacio</label>
+                    <input type="text" id="numero_espacio" name="numero_espacio"
+                           value="<%= esEdicion ? espacio.numero_espacio : '' %>"
+                           placeholder="A-01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_estacionamiento">Estacionamiento</label>
+                    <select id="id_estacionamiento" name="id_estacionamiento" required>
+                        <% estacionamientos.forEach(function(e) { %>
+                            <option value="<%= e.id_estacionamiento %>"
+                                <%= esEdicion && espacio.id_estacionamiento === e.id_estacionamiento ? 'selected' : '' %>>
+                                <%= e.nombre %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_tipo_espacio">Tipo de espacio</label>
+                    <select id="id_tipo_espacio" name="id_tipo_espacio" required>
+                        <% tipos.forEach(function(t) { %>
+                            <option value="<%= t.id_tipo_espacio %>"
+                                <%= esEdicion && espacio.id_tipo_espacio === t.id_tipo_espacio ? 'selected' : '' %>>
+                                <%= t.nombre_tipo %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <select id="estado" name="estado" required>
+                        <% estados.forEach(function(es) { %>
+                            <option value="<%= es %>"
+                                <%= (esEdicion ? espacio.estado : 'Disponible') === es ? 'selected' : '' %>>
+                                <%= es %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn"><%= esEdicion ? 'Guardar cambios' : 'Crear espacio' %></button>
+            </form>
+        </div>
+    </main>
+</div>
+<%- include('../partials/footer') %>

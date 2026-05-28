@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+<div class="app-shell">
+    <%- include('../partials/nav', { user, activo: 'estacionamientos' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <a href="/estacionamientos" class="back-link">&larr; Volver</a>
+            <h1><%= estacionamiento.nombre %></h1>
+            <p class="muted"><%= estacionamiento.direccion || '' %></p>
+        </div>
+
+        <!-- Leyenda de colores -->
+        <div class="legend">
+            <span><i class="dot-libre"></i> Disponible</span>
+            <span><i class="dot-ocupado"></i> Ocupado</span>
+            <span><i class="dot-reservado"></i> Reservado</span>
+        </div>
+
+        <% if (espacios.length === 0) { %>
+            <div class="empty">Este estacionamiento aun no tiene espacios.</div>
+        <% } %>
+
+        <!-- Mapa visual tipo estacionamiento -->
+        <div class="parking-map">
+            <% espacios.forEach(function(s) {
+                 var clase = s.estado === 'Disponible' ? 'spot-libre'
+                           : (s.estado === 'Ocupado' ? 'spot-ocupado' : 'spot-reservado');
+            %>
+                <% if (s.estado === 'Disponible') { %>
+                    <a class="spot <%= clase %>" href="/reservas/nueva?espacio=<%= s.id_espacio %>"
+                       title="<%= s.nombre_tipo %><%= s.precio_hora ? ' - $' + s.precio_hora + '/h' : '' %>">
+                        <span class="spot-num"><%= s.numero_espacio %></span>
+                        <span class="spot-tipo"><%= s.nombre_tipo %></span>
+                    </a>
+                <% } else { %>
+                    <div class="spot <%= clase %>"
+                         title="<%= s.estado %>">
+                        <span class="spot-num"><%= s.numero_espacio %></span>
+                        <span class="spot-tipo"><%= s.estado %></span>
+                    </div>
+                <% } %>
+            <% }); %>
+        </div>
+
+        <p class="hint">Toca un espacio <strong>verde</strong> para reservarlo.</p>
+    </main>
+</div>
+<%- include('../partials/footer') %>
