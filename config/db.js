@@ -2,20 +2,17 @@
  * config/db.js
  * ---------------------------------------------------------------------------
  * Conexion a SQL Server usando autenticacion SQL (usuario + contrasena).
- * Sirve tanto para local (SQL Server / SQL Express) como para la nube
- * (Azure SQL Database). El driver es "mssql" (tedious), 100% JavaScript:
- * no requiere ODBC ni binarios nativos, asi que tambien funciona en el
- * runner de GitHub Actions y en Azure App Service Linux.
+ * El driver es "mssql" (tedious), puro JavaScript.
  *
- * Los datos se leen de .env. Variables soportadas:
+ * Variables leidas de .env:
  *   DB_HOST       Servidor (ej: localhost  o  parkspot.database.windows.net)
  *   DB_PORT       Puerto (1433 por defecto)
  *   DB_NAME       Nombre de la base de datos
- *   DB_USER       Usuario SQL (ej: sa, parkspot, etc.)
+ *   DB_USER       Usuario SQL
  *   DB_PASS       Contrasena
  *   DB_INSTANCE   (opcional) Instancia con nombre, ej: SQLEXPRESS
- *   DB_ENCRYPT    "true" en Azure / "false" en local (por defecto: false)
- *   DB_TRUST_CERT "true" en local con cert. autofirmado (por defecto: true)
+ *   DB_ENCRYPT    "true" en la nube / "false" en local sin cifrado
+ *   DB_TRUST_CERT "true" en local con cert. autofirmado
  * ---------------------------------------------------------------------------
  */
 
@@ -39,8 +36,6 @@ const config = {
   },
 };
 
-// Soporte opcional para instancia con nombre (ej: localhost\SQLEXPRESS).
-// Si la usas, el servicio "SQL Server Browser" debe estar corriendo en Windows.
 if (process.env.DB_INSTANCE) {
   config.options.instanceName = process.env.DB_INSTANCE;
 }
