@@ -1,0 +1,65 @@
+# .github/workflows/deploy.yml
+# ===========================================================================
+#  Pipeline CI/CD de ParkSpot  ->  Deploy en RENDER
+#
+#  Como funciona:
+#   1) Disparador: cada push a "main" o "develop", o PRs hacia esas ramas.
+#   2) Build: instala dependencias y valida que el codigo no tenga errores.
+#      Esto corre en los runners gratuitos de GitHub (Ubuntu).
+#   3) Deploy: SOLO cuando los cambios entran a "main" mediante un push,
+#      el pipeline llama al "Deploy Hook" de Render. Render entonces baja
+#      el codigo nuevo, lo construye y publica la app en su URL publica.
+#
+#  Requisitos en GitHub (una sola vez):
+#   - Tener el servicio creado en Render conectado a este repo.
+#   - Tener el "Deploy Hook" del servicio guardado como secret
+#     llamado RENDER_DEPLOY_HOOK_URL en:
+#       repo -> Settings -> Secrets and variables -> Actions -> New secret
+# ===========================================================================
+
+name: Pipeline ParkSpot (Render)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  # ---- 1) BUILD: instala y valida (corre SIEMPRE) ----
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1) Descargar el codigo
+        uses: actions/checkout@v4
+
+      - name: 2) Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: 3) Instalar dependencias
+        run: npm install
+
+      - name: 4) Validar sintaxis del servidor
+        run: node --check app.js
+
+  # ---- 2) DEPLOY: dispara el deploy en Render (SOLO cuando llega a main) ----
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Disparar deploy en Render
+        run: |
+          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
+            echo "ERROR: no esta configurado el secret RENDER_DEPLOY_HOOK_URL."
+            echo "Crea el deploy hook en Render y guardalo en:"
+            echo "  Settings -> Secrets and variables -> Actions -> RENDER_DEPLOY_HOOK_URL"
+            exit 1
+          fi
+          echo "Llamando al deploy hook de Render..."
+          curl -fsSL -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          echo ""
+          echo "Deploy disparado en Render. Revisa el dashboard de Render para ver el progreso."

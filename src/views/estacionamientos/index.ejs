@@ -1,0 +1,33 @@
+<%- include('../partials/header') %>
+<div class="app-shell">
+    <%- include('../partials/nav', { user, activo: 'estacionamientos' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <h1>Estacionamientos</h1>
+            <p>Elige un estacionamiento para ver sus espacios y reservar.</p>
+        </div>
+
+        <% if (estacionamientos.length === 0) { %>
+            <div class="empty">No hay estacionamientos registrados todavia.</div>
+        <% } %>
+
+        <div class="cards-grid">
+            <% estacionamientos.forEach(function(e) { %>
+                <a class="parking-card" href="/estacionamientos/<%= e.id_estacionamiento %>">
+                    <div class="parking-card-top">
+                        <div class="icon">&#128661;</div>
+                        <span class="badge badge-libre"><%= e.disponibles %> libres</span>
+                    </div>
+                    <h3><%= e.nombre %></h3>
+                    <p class="muted"><%= e.direccion || 'Sin direccion' %></p>
+                    <div class="parking-card-foot">
+                        <span><%= e.total_espacios %> espacios</span>
+                        <span class="link-go">Ver mapa &rarr;</span>
+                    </div>
+                </a>
+            <% }); %>
+        </div>
+    </main>
+</div>
+<%- include('../partials/footer') %>
