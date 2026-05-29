@@ -1,26 +1,58 @@
 <%- include('../partials/header') %>
 
-<div class="auth-wrapper">
+<div class="auth-wrapper auth-modern">
 
-    <!-- Panel izquierdo: branding -->
+    <!-- ===== Panel izquierdo: hero con animaciones ===== -->
     <div class="auth-hero">
-        <div class="logo">
-            <span class="logo-badge">P</span> ParkSpot
-        </div>
-        <h1>Crea tu cuenta y empieza a estacionar mejor.</h1>
-        <p>Unete a ParkSpot y administra tus reservas de estacionamiento desde cualquier lugar.</p>
-        <div class="features">
-            <div class="feature"><span class="dot">&check;</span> Registro rapido y gratuito</div>
-            <div class="feature"><span class="dot">&check;</span> Tus datos protegidos</div>
-            <div class="feature"><span class="dot">&check;</span> Acceso a tu panel personal</div>
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+
+        <div class="hero-content">
+            <div class="logo">
+                <span class="logo-badge">P</span>
+                <span class="logo-text">ParkSpot</span>
+            </div>
+
+            <h1 class="hero-title">
+                Unete a la<br>
+                nueva forma de <span class="text-gradient">estacionar</span>.
+            </h1>
+            <p class="hero-sub">Crea tu cuenta y empieza a reservar espacios en segundos.</p>
+
+            <div class="features features-modern">
+                <div class="feature">
+                    <span class="feature-icon">&#9889;</span>
+                    <div>
+                        <strong>Registro rapido</strong>
+                        <small>Listo en menos de un minuto</small>
+                    </div>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">&#128274;</span>
+                    <div>
+                        <strong>Datos protegidos</strong>
+                        <small>Contrasena cifrada con bcrypt</small>
+                    </div>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">&#127919;</span>
+                    <div>
+                        <strong>Tu panel personal</strong>
+                        <small>Reservas, vehiculos y tickets</small>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Panel derecho: formulario -->
+    <!-- ===== Panel derecho: formulario glassmorphism ===== -->
     <div class="auth-form-side">
-        <div class="auth-card">
-            <h2>Crear cuenta</h2>
-            <p class="subtitle">Completa tus datos para registrarte.</p>
+        <div class="auth-card glass-card">
+            <div class="card-header">
+                <h2 class="card-title">Crea tu cuenta &#10024;</h2>
+                <p class="card-sub">Completa tus datos para empezar</p>
+            </div>
 
             <% if (flash.error) { %>
                 <div class="alert alert-error"><%= flash.error %></div>
@@ -28,44 +60,57 @@
 
             <form action="/register" method="POST" id="registerForm" novalidate>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="nombre">Nombre</label>
-                        <input type="text" id="nombre" name="nombre" placeholder="Juan" required>
+                    <div>
+                        <div class="input-modern">
+                            <input type="text" id="nombre" name="nombre" placeholder=" " required>
+                            <label for="nombre">Nombre</label>
+                        </div>
                         <div class="field-error" data-for="nombre"></div>
                     </div>
-                    <div class="form-group">
-                        <label for="apellido">Apellido</label>
-                        <input type="text" id="apellido" name="apellido" placeholder="Perez" required>
+                    <div>
+                        <div class="input-modern">
+                            <input type="text" id="apellido" name="apellido" placeholder=" " required>
+                            <label for="apellido">Apellido</label>
+                        </div>
                         <div class="field-error" data-for="apellido"></div>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="input-modern">
+                    <input type="email" id="correo" name="correo" placeholder=" " required>
                     <label for="correo">Correo electronico</label>
-                    <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
-                    <div class="field-error" data-for="correo"></div>
                 </div>
+                <div class="field-error" data-for="correo"></div>
 
-                <div class="form-group">
-                    <label for="telefono">Telefono <span style="font-weight:400;color:var(--text-muted)">(opcional)</span></label>
-                    <input type="tel" id="telefono" name="telefono" placeholder="+52 55 1234 5678">
-                    <div class="field-error" data-for="telefono"></div>
+                <div class="input-modern">
+                    <input type="tel" id="telefono" name="telefono" placeholder=" ">
+                    <label for="telefono">Telefono (opcional)</label>
                 </div>
+                <div class="field-error" data-for="telefono"></div>
 
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="contrasena">Contrasena</label>
-                        <input type="password" id="contrasena" name="contrasena" placeholder="Minimo 8 caracteres" required>
+                    <div>
+                        <div class="input-modern input-password">
+                            <input type="password" id="contrasena" name="contrasena" placeholder=" " required>
+                            <label for="contrasena">Contrasena</label>
+                            <button type="button" class="toggle-pass" aria-label="Mostrar">&#128065;</button>
+                        </div>
                         <div class="field-error" data-for="contrasena"></div>
                     </div>
-                    <div class="form-group">
-                        <label for="confirmar">Confirmar</label>
-                        <input type="password" id="confirmar" name="confirmar" placeholder="Repite la contrasena" required>
+                    <div>
+                        <div class="input-modern input-password">
+                            <input type="password" id="confirmar" name="confirmar" placeholder=" " required>
+                            <label for="confirmar">Confirmar</label>
+                            <button type="button" class="toggle-pass" aria-label="Mostrar">&#128065;</button>
+                        </div>
                         <div class="field-error" data-for="confirmar"></div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn">Crear cuenta</button>
+                <button type="submit" class="btn btn-gradient">
+                    <span>Crear cuenta</span>
+                    <span class="btn-arrow">&rarr;</span>
+                </button>
             </form>
 
             <p class="auth-switch">
@@ -76,4 +121,14 @@
 </div>
 
 <script src="/js/validations.js"></script>
+<script>
+    document.querySelectorAll('.toggle-pass').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var input = btn.parentElement.querySelector('input');
+            var visible = input.type === 'text';
+            input.type = visible ? 'password' : 'text';
+            btn.innerHTML = visible ? '&#128065;' : '&#128584;';
+        });
+    });
+</script>
 <%- include('../partials/footer') %>

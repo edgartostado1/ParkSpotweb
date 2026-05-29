@@ -1,11 +1,13 @@
 /**
  * src/controllers/vehiculoController.js
  * ---------------------------------------------------------------------------
- * El usuario ve sus vehiculos y registra nuevos. Necesarios para crear reservas.
+ * El usuario ve sus vehiculos y registra nuevos. Ahora el formulario usa
+ * <select> con los catalogos normalizados (Modelos+Marca, Colores, TiposVehiculo).
  * ---------------------------------------------------------------------------
  */
 
 const Vehiculo = require('../models/Vehiculo');
+const Catalogos = require('../models/Catalogos');
 
 function popFlash(req) {
   const flash = req.session.flash || {};
@@ -17,11 +19,20 @@ const vehiculoController = {
   // GET /vehiculos -> lista + formulario de registro
   async listar(req, res) {
     try {
-      const vehiculos = await Vehiculo.porUsuario(req.session.user.id_usuario);
+      const [vehiculos, modelos, colores, tipos] = await Promise.all([
+        Vehiculo.porUsuario(req.session.user.id_usuario),
+        Catalogos.modelos(),
+        Catalogos.colores(),
+        Catalogos.tiposVehiculo(),
+      ]);
+
       res.render('vehiculos/index', {
         titulo: 'Mis vehiculos',
         user: req.session.user,
         vehiculos,
+        modelos,
+        colores,
+        tipos,
         flash: popFlash(req),
       });
     } catch (e) {
@@ -30,13 +41,15 @@ const vehiculoController = {
     }
   },
 
-  // POST /vehiculos -> registra un vehiculo
+  // POST /vehiculos -> registra un vehiculo (ahora con IDs de catalogos)
   async crear(req, res) {
     const placa = (req.body.placa || '').trim().toUpperCase();
-    const { marca, modelo, color, tipo_vehiculo } = req.body;
+    const id_modelo = parseInt(req.body.id_modelo, 10);
+    const id_color  = parseInt(req.body.id_color, 10);
+    const id_tipo   = parseInt(req.body.id_tipo, 10);
 
-    if (!placa) {
-      req.session.flash = { error: 'La placa es obligatoria.' };
+    if (!placa || !id_modelo || !id_color || !id_tipo) {
+      req.session.flash = { error: 'Completa todos los campos del vehiculo.' };
       return res.redirect('/vehiculos');
     }
 
@@ -47,9 +60,10 @@ const vehiculoController = {
       }
 
       await Vehiculo.crear({
-        placa, marca, modelo, color, tipo_vehiculo,
+        placa, id_modelo, id_color, id_tipo,
         id_usuario: req.session.user.id_usuario,
       });
+
       req.session.flash = { success: 'Vehiculo registrado correctamente.' };
       res.redirect('/vehiculos');
     } catch (e) {

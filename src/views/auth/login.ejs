@@ -1,26 +1,59 @@
 <%- include('../partials/header') %>
 
-<div class="auth-wrapper">
+<div class="auth-wrapper auth-modern">
 
-    <!-- Panel izquierdo: branding -->
+    <!-- ===== Panel izquierdo: hero con animaciones ===== -->
     <div class="auth-hero">
-        <div class="logo">
-            <span class="logo-badge">P</span> ParkSpot
-        </div>
-        <h1>Gestiona tu estacionamiento sin complicaciones.</h1>
-        <p>Reservas, espacios y pagos en una sola plataforma moderna, rapida y segura.</p>
-        <div class="features">
-            <div class="feature"><span class="dot">&check;</span> Control de espacios en tiempo real</div>
-            <div class="feature"><span class="dot">&check;</span> Reservas y tickets digitales</div>
-            <div class="feature"><span class="dot">&check;</span> Reportes para administradores</div>
+        <!-- Blobs animados de fondo -->
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+
+        <div class="hero-content">
+            <div class="logo">
+                <span class="logo-badge">P</span>
+                <span class="logo-text">ParkSpot</span>
+            </div>
+
+            <h1 class="hero-title">
+                Tu lugar,<br>
+                a un <span class="text-gradient">click</span> de distancia.
+            </h1>
+            <p class="hero-sub">La forma mas simple, rapida y moderna de reservar tu estacionamiento.</p>
+
+            <div class="features features-modern">
+                <div class="feature">
+                    <span class="feature-icon">&#9889;</span>
+                    <div>
+                        <strong>Reserva al instante</strong>
+                        <small>En menos de 30 segundos</small>
+                    </div>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">&#128274;</span>
+                    <div>
+                        <strong>100% seguro</strong>
+                        <small>Tus datos siempre protegidos</small>
+                    </div>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">&#128663;</span>
+                    <div>
+                        <strong>Disponibilidad en vivo</strong>
+                        <small>Mapa de espacios en tiempo real</small>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Panel derecho: formulario -->
+    <!-- ===== Panel derecho: formulario glassmorphism ===== -->
     <div class="auth-form-side">
-        <div class="auth-card">
-            <h2>Bienvenido de nuevo Usuario</h2>
-            <p class="subtitle">Inicia sesion para continuar en ParkSpot.</p>
+        <div class="auth-card glass-card">
+            <div class="card-header">
+                <h2 class="card-title">!Bienvenido de nuevo! <span class="wave">&#128075;</span></h2>
+                <p class="card-sub">Inicia sesion para continuar en ParkSpot</p>
+            </div>
 
             <% if (flash.error) { %>
                 <div class="alert alert-error"><%= flash.error %></div>
@@ -30,19 +63,23 @@
             <% } %>
 
             <form action="/login" method="POST" id="loginForm" novalidate>
-                <div class="form-group">
+                <div class="input-modern">
+                    <input type="email" id="correo" name="correo" placeholder=" " required>
                     <label for="correo">Correo electronico</label>
-                    <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
-                    <div class="field-error" data-for="correo"></div>
                 </div>
+                <div class="field-error" data-for="correo"></div>
 
-                <div class="form-group">
+                <div class="input-modern input-password">
+                    <input type="password" id="contrasena" name="contrasena" placeholder=" " required>
                     <label for="contrasena">Contrasena</label>
-                    <input type="password" id="contrasena" name="contrasena" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required>
-                    <div class="field-error" data-for="contrasena"></div>
+                    <button type="button" class="toggle-pass" aria-label="Mostrar contrasena">&#128065;</button>
                 </div>
+                <div class="field-error" data-for="contrasena"></div>
 
-                <button type="submit" class="btn">Iniciar sesion</button>
+                <button type="submit" class="btn btn-gradient">
+                    <span>Iniciar sesion</span>
+                    <span class="btn-arrow">&rarr;</span>
+                </button>
             </form>
 
             <p class="auth-switch">
@@ -53,4 +90,15 @@
 </div>
 
 <script src="/js/validations.js"></script>
+<script>
+    // Mostrar / ocultar contrasena
+    document.querySelectorAll('.toggle-pass').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var input = btn.parentElement.querySelector('input');
+            var visible = input.type === 'text';
+            input.type = visible ? 'password' : 'text';
+            btn.innerHTML = visible ? '&#128065;' : '&#128584;';
+        });
+    });
+</script>
 <%- include('../partials/footer') %>
