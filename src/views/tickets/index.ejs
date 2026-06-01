@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+<%
+   function fmtHora(t) {
+     if (!t) return '';
+     if (t instanceof Date) {
+       return String(t.getUTCHours()).padStart(2, '0') + ':' +
+              String(t.getUTCMinutes()).padStart(2, '0');
+     }
+     return String(t).substring(0, 5);
+   }
+%>
+<div class="app-shell">
+    <%- include('../partials/nav', { user, activo: 'tickets' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <h1>Mis tickets</h1>
+            <p class="muted">Todos los tickets digitales que has generado.</p>
+        </div>
+
+        <% if (flash.success) { %><div class="alert alert-success"><%= flash.success %></div><% } %>
+        <% if (flash.error) { %><div class="alert alert-error"><%= flash.error %></div><% } %>
+
+        <% if (tickets.length === 0) { %>
+            <div class="empty">Aun no tienes tickets. <a href="/estacionamientos">Haz una reserva</a> para generar uno.</div>
+        <% } else { %>
+            <div class="cards-grid">
+                <% tickets.forEach(function(t) {
+                     var clase = (t.estado_ticket || '').toLowerCase();
+                %>
+                    <a class="ticket-card" href="/tickets/<%= t.id_reserva %>">
+                        <div class="ticket-card-top">
+                            <span class="muted small">Ticket</span>
+                            <span class="ticket-estado ticket-<%= clase %>"><%= t.estado_ticket %></span>
+                        </div>
+                        <h3 class="ticket-card-codigo"><%= t.codigo_ticket %></h3>
+                        <p class="muted"><%= t.estacionamiento %> · Espacio <%= t.numero_espacio %></p>
+                        <div class="ticket-card-foot">
+                            <span><%= new Date(t.fecha_reserva).toLocaleDateString() %></span>
+                            <span><%= fmtHora(t.hora_inicio) %> - <%= fmtHora(t.hora_fin) %></span>
+                        </div>
+                    </a>
+                <% }); %>
+            </div>
+        <% } %>
+    </main>
+</div>
+<%- include('../partials/footer') %>

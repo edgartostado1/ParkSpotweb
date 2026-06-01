@@ -1,0 +1,103 @@
+<%- include('../partials/header') %>
+<%
+   function fmtHora(t) {
+     if (!t) return '';
+     if (t instanceof Date) {
+       return String(t.getUTCHours()).padStart(2, '0') + ':' +
+              String(t.getUTCMinutes()).padStart(2, '0');
+     }
+     return String(t).substring(0, 5);
+   }
+%>
+<div class="app-shell">
+    <%- include('../partials/nav', { user, activo: 'tickets' }) %>
+
+    <main class="content content-narrow">
+        <% if (flash.success) { %><div class="alert alert-success"><%= flash.success %></div><% } %>
+
+        <div class="ticket-wrap">
+            <!-- Cabecera con marca -->
+            <div class="ticket-header">
+                <div class="ticket-brand">
+                    <span class="logo-badge">P</span>
+                    <strong>ParkSpot</strong>
+                </div>
+                <span class="ticket-estado ticket-<%= (ticket.estado_ticket || '').toLowerCase() %>">
+                    <%= ticket.estado_ticket %>
+                </span>
+            </div>
+
+            <!-- Codigo grande -->
+            <div class="ticket-codigo">
+                <span class="muted small">Codigo del ticket</span>
+                <h1><%= ticket.codigo_ticket %></h1>
+            </div>
+
+            <div class="ticket-divider"></div>
+
+            <!-- Datos en grilla -->
+            <div class="ticket-grid">
+                <div>
+                    <span class="muted small">Estacionamiento</span>
+                    <strong><%= ticket.estacionamiento %></strong>
+                </div>
+                <div>
+                    <span class="muted small">Espacio</span>
+                    <strong><%= ticket.numero_espacio %> · <%= ticket.tipo_espacio %></strong>
+                </div>
+                <div>
+                    <span class="muted small">Fecha</span>
+                    <strong><%= new Date(ticket.fecha_reserva).toLocaleDateString() %></strong>
+                </div>
+                <div>
+                    <span class="muted small">Horario</span>
+                    <strong><%= fmtHora(ticket.hora_inicio) %> - <%= fmtHora(ticket.hora_fin) %></strong>
+                </div>
+                <div>
+                    <span class="muted small">Vehiculo</span>
+                    <strong><%= ticket.placa %></strong>
+                </div>
+                <div>
+                    <span class="muted small">Usuario</span>
+                    <strong><%= ticket.usuario %></strong>
+                </div>
+            </div>
+
+            <% if (pago) { %>
+                <div class="ticket-divider"></div>
+                <div class="ticket-grid">
+                    <div>
+                        <span class="muted small">Pago</span>
+                        <strong>$<%= pago.monto %></strong>
+                    </div>
+                    <div>
+                        <span class="muted small">Metodo</span>
+                        <strong><%= pago.nombre_metodo %></strong>
+                    </div>
+                    <div>
+                        <span class="muted small">Tarjeta</span>
+                        <strong>**** **** **** <%= pago.ultimos_4 %></strong>
+                    </div>
+                    <div>
+                        <span class="muted small">Estado</span>
+                        <strong style="color: var(--success)"><%= pago.estado_pago %></strong>
+                    </div>
+                </div>
+            <% } %>
+
+            <!-- Banda inferior tipo "boleto" -->
+            <div class="ticket-stub">
+                <div class="stub-dots"></div>
+                <p class="muted small">Muestra este ticket al ingresar al estacionamiento.</p>
+                <p class="muted small">Generado el <%= new Date(ticket.fecha_generacion).toLocaleString() %></p>
+            </div>
+        </div>
+
+        <div class="ticket-actions">
+            <button class="btn btn-mini" onclick="window.print()">Imprimir</button>
+            <a class="btn btn-mini" href="/tickets">Mis tickets</a>
+            <a class="btn btn-mini" href="/estacionamientos">Reservar otro</a>
+        </div>
+    </main>
+</div>
+<%- include('../partials/footer') %>

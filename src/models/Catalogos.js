@@ -48,6 +48,18 @@ const Catalogos = {
       .query('SELECT id_metodo_pago, nombre_metodo FROM MetodosPago ORDER BY nombre_metodo');
     return result.recordset;
   },
+
+  /** Solo Visa y MasterCard (para el formulario de pago simulado). */
+  async metodosTarjeta() {
+    const pool = await getPool();
+    const result = await pool.request().query(`
+      SELECT id_metodo_pago, nombre_metodo
+      FROM MetodosPago
+      WHERE nombre_metodo IN ('Visa', 'MasterCard')
+      ORDER BY nombre_metodo
+    `);
+    return result.recordset;
+  },
 };
 
 module.exports = Catalogos;

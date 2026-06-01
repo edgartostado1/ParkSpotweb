@@ -344,6 +344,197 @@ a.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); bord
     .site-footer { justify-content: center; text-align: center; }
 }
 
+/* =========================================================================
+   MODULO DE PAGO Y TICKETS DIGITALES
+   ========================================================================= */
+
+/* Resumen del pago */
+.resumen-pago .resumen-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .95rem;
+}
+.resumen-pago .resumen-row:last-child { border-bottom: none; }
+.resumen-total {
+    font-size: 1.1rem !important;
+    padding-top: 14px !important;
+}
+.resumen-total strong { color: var(--primary); font-size: 1.3rem; }
+.small { font-size: .85rem; }
+
+/* Tarjetas de marca: Visa / MasterCard */
+.card-options {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px;
+}
+.card-option {
+    position: relative;
+    padding: 18px 16px;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    background: var(--white);
+    transition: border-color .15s, background .15s, transform .08s;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+.card-option input { position: absolute; opacity: 0; pointer-events: none; }
+.card-option:has(input:checked) { border-color: var(--primary); background: var(--primary-light); }
+.card-option .card-brand { font-weight: 800; font-size: 1.15rem; letter-spacing: .5px; }
+.card-visa .card-brand       { color: #1a1f71; }
+.card-mastercard .card-brand { color: #eb001b; }
+.card-option::before {
+    content: '';
+    position: absolute; right: 12px; top: 12px;
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--border);
+}
+.card-option:has(input:checked)::before {
+    background: var(--primary); border-color: var(--primary);
+    box-shadow: inset 0 0 0 3px var(--white);
+}
+
+/* ----- TICKET DIGITAL ----- */
+.ticket-wrap {
+    background: var(--white);
+    border-radius: 22px;
+    box-shadow: 0 20px 50px rgba(2,6,23,0.12);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 18px;
+}
+.ticket-header {
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    color: #fff;
+    padding: 22px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.ticket-brand { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
+.ticket-brand .logo-badge { background: #fff; color: var(--primary); }
+.ticket-estado {
+    padding: 5px 12px; border-radius: 999px; font-size: .75rem;
+    font-weight: 800; background: rgba(255,255,255,0.2); color: #fff;
+}
+.ticket-vigente { background: rgba(34,197,94,0.95); }
+.ticket-usado   { background: rgba(245,158,11,0.95); }
+.ticket-cancelado { background: rgba(239,68,68,0.95); }
+
+.ticket-codigo { padding: 28px; text-align: center; }
+.ticket-codigo h1 {
+    font-family: 'Courier New', monospace;
+    font-size: 2.4rem;
+    letter-spacing: 4px;
+    margin-top: 6px;
+    color: var(--text);
+}
+.ticket-divider {
+    border-top: 2px dashed var(--border);
+    margin: 0 28px;
+    position: relative;
+}
+.ticket-divider::before, .ticket-divider::after {
+    content: ''; position: absolute; top: -14px;
+    width: 26px; height: 26px; background: var(--bg);
+    border-radius: 50%;
+}
+.ticket-divider::before { left: -42px; }
+.ticket-divider::after  { right: -42px; }
+
+.ticket-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px;
+    padding: 22px 28px;
+}
+.ticket-grid > div { display: flex; flex-direction: column; gap: 4px; }
+.ticket-grid strong { font-size: 1rem; }
+
+.ticket-stub {
+    background: var(--bg);
+    padding: 20px 28px;
+    text-align: center;
+}
+.stub-dots {
+    width: 60px; height: 6px;
+    background: repeating-linear-gradient(90deg, var(--text-muted) 0 4px, transparent 4px 10px);
+    margin: 0 auto 12px;
+    border-radius: 3px; opacity: .5;
+}
+
+.ticket-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.ticket-actions .btn-mini { padding: 10px 18px; }
+
+/* Tarjeta de ticket en la lista "mis tickets" */
+.ticket-card {
+    display: block;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .1s, box-shadow .15s, border-color .15s;
+}
+.ticket-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--primary); }
+.ticket-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.ticket-card-codigo {
+    font-family: 'Courier New', monospace;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    color: var(--primary);
+}
+.ticket-card-foot { display: flex; justify-content: space-between; margin-top: 14px; font-size: .85rem; color: var(--text-muted); }
+
+/* Impresion: oculta nav y botones, deja solo el ticket */
+@media print {
+    .topbar, .site-footer, .ticket-actions, .page-head .back-link { display: none !important; }
+    .content { padding: 0 !important; }
+    .ticket-wrap { box-shadow: none; }
+}
+
+/* ===== Pagina de PAGO EXITOSO ===== */
+.success-wrap {
+    text-align: center;
+    padding: 40px 20px 20px;
+}
+.success-icon {
+    position: relative;
+    width: 110px; height: 110px;
+    margin: 0 auto 24px;
+}
+.success-icon svg {
+    position: relative; z-index: 2;
+    width: 110px; height: 110px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-radius: 50%;
+    padding: 20px;
+    box-shadow: 0 14px 30px rgba(34,197,94,0.35);
+    animation: popIn .5s cubic-bezier(.18,.89,.32,1.28);
+}
+.success-ring, .success-ring-2 {
+    position: absolute; inset: 0;
+    border-radius: 50%; border: 3px solid #22c55e; opacity: .5;
+    animation: ringPulse 1.8s ease-out infinite;
+}
+.success-ring-2 { animation-delay: .6s; }
+@keyframes popIn {
+    0%   { transform: scale(0); opacity: 0; }
+    70%  { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
+}
+@keyframes ringPulse {
+    0%   { transform: scale(1);    opacity: .6; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+.success-title { font-size: 2.1rem; font-weight: 800; margin-bottom: 8px; }
+.success-sub   { color: var(--text-muted); margin-bottom: 28px; }
+.success-summary { margin-bottom: 28px; text-align: left; }
+.success-summary .resumen-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .95rem;
+}
+.success-summary .resumen-row:last-child { border-bottom: none; }
+.success-actions { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.success-actions .btn-gradient { width: auto; padding: 14px 28px; min-width: 220px; }
+
 /* Pantallas pequenas (celular) */
 @media (max-width: 560px) {
     .form-row { grid-template-columns: 1fr; }   /* campos en una columna */

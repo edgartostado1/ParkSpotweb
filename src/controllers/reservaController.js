@@ -78,7 +78,7 @@ const reservaController = {
       }
 
       // ----- Crear reserva y marcar el espacio como Reservado -----
-      await Reserva.crear({
+      const idReserva = await Reserva.crear({
         fecha_reserva: fecha,
         hora_inicio: horaInicio,
         hora_fin: horaFin,
@@ -88,8 +88,9 @@ const reservaController = {
       });
       await Espacio.cambiarEstado(idEspacio, 'Reservado');
 
-      req.session.flash = { success: 'Reserva creada correctamente.' };
-      res.redirect('/reservas');
+      // Tras la reserva, mandamos al usuario a pagar.
+      req.session.flash = { success: 'Reserva creada. Procede a pagar.' };
+      res.redirect('/pagos/nuevo/' + idReserva);
     } catch (e) {
       console.error(e);
       req.session.flash = { error: 'No se pudo crear la reserva.' };

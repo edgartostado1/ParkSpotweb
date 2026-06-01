@@ -39,7 +39,10 @@ const Reserva = {
     return result.recordset[0].total > 0;
   },
 
-  /** Crea una reserva y devuelve su id. */
+  /** Crea una reserva y devuelve su id.
+   *  Usamos OUTPUT INTO @tabla porque Reservas tiene trigger
+   *  (SQL Server exige esta forma cuando hay triggers).
+   */
   async crear(datos) {
     const pool = await getPool();
     const result = await pool.request()
@@ -50,11 +53,13 @@ const Reserva = {
       .input('vehiculo', sql.Int, datos.id_vehiculo)
       .input('espacio', sql.Int, datos.id_espacio)
       .query(`
+        DECLARE @t TABLE (id INT);
         INSERT INTO Reservas
           (fecha_reserva, hora_inicio, hora_fin, estado_reserva,
            id_usuario, id_vehiculo, id_espacio)
-        OUTPUT INSERTED.id_reserva
-        VALUES (@fecha, @hi, @hf, 'Activa', @usuario, @vehiculo, @espacio)
+        OUTPUT INSERTED.id_reserva INTO @t
+        VALUES (@fecha, @hi, @hf, 'Activa', @usuario, @vehiculo, @espacio);
+        SELECT id AS id_reserva FROM @t;
       `);
     return result.recordset[0].id_reserva;
   },

@@ -1,0 +1,47 @@
+<%- include('../partials/header') %>
+<div class="app-shell">
+    <%- include('../partials/nav', { user, activo: 'reservas' }) %>
+
+    <main class="content content-narrow">
+        <div class="success-wrap">
+            <!-- Icono de exito con anillos -->
+            <div class="success-icon">
+                <div class="success-ring"></div>
+                <div class="success-ring success-ring-2"></div>
+                <svg viewBox="0 0 52 52">
+                    <path fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"
+                          d="M14 27 l8 8 l16 -18"/>
+                </svg>
+            </div>
+
+            <h1 class="success-title">¡Pago exitoso!</h1>
+            <p class="success-sub">Tu reserva esta confirmada y tu ticket ya esta listo.</p>
+
+            <% if (pago) { %>
+                <div class="panel-card success-summary">
+                    <div class="resumen-row"><span>Monto pagado</span><strong>$<%= pago.monto %></strong></div>
+                    <div class="resumen-row"><span>Metodo</span><strong><%= pago.nombre_metodo %></strong></div>
+                    <div class="resumen-row"><span>Tarjeta</span><strong>**** **** **** <%= pago.ultimos_4 %></strong></div>
+                    <% if (ticket) { %>
+                        <div class="resumen-row"><span>Codigo del ticket</span>
+                            <strong style="font-family:'Courier New',monospace; letter-spacing:2px">
+                                <%= ticket.codigo_ticket %>
+                            </strong>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <div class="success-actions">
+                <% if (ticket) { %>
+                    <a class="btn btn-gradient" href="/tickets/<%= ticket.id_reserva %>">
+                        <span>Ver mi ticket</span><span class="btn-arrow">&rarr;</span>
+                    </a>
+                <% } %>
+                <a class="btn-mini" href="/reservas">Mis reservas</a>
+                <a class="btn-mini" href="/estacionamientos">Reservar otro espacio</a>
+            </div>
+        </div>
+    </main>
+</div>
+<%- include('../partials/footer') %>

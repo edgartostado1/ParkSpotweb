@@ -16,6 +16,8 @@ const estacionamientoController = require('../controllers/estacionamientoControl
 const espacioController = require('../controllers/espacioController');
 const vehiculoController = require('../controllers/vehiculoController');
 const reservaController = require('../controllers/reservaController');
+const pagoController = require('../controllers/pagoController');
+const ticketController = require('../controllers/ticketController');
 const { requireLogin, requireRole } = require('../middleware/auth');
 
 // ----- Autenticacion -----
@@ -43,6 +45,13 @@ router.get('/reservas', requireLogin, reservaController.listar);
 router.get('/reservas/nueva', requireLogin, reservaController.nueva);
 router.post('/reservas', requireLogin, reservaController.crear);
 router.post('/reservas/:id/cancelar', requireLogin, reservaController.cancelar);
+
+// Pagos y tickets digitales
+router.get('/pagos/nuevo/:idReserva', requireLogin, pagoController.nuevo);
+router.post('/pagos', requireLogin, pagoController.procesar);
+router.get('/pagos/exitoso/:idReserva', requireLogin, pagoController.exitoso);
+router.get('/tickets', requireLogin, ticketController.listar);
+router.get('/tickets/:idReserva', requireLogin, ticketController.mostrar);
 
 // ===========================================================================
 //  ADMIN: CRUD de espacios

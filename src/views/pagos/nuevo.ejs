@@ -1,0 +1,107 @@
+<%- include('../partials/header') %>
+<%
+   // Helper para formatear hora (Date o string) como HH:MM
+   function fmtHora(t) {
+     if (!t) return '';
+     if (t instanceof Date) {
+       return String(t.getUTCHours()).padStart(2, '0') + ':' +
+              String(t.getUTCMinutes()).padStart(2, '0');
+     }
+     return String(t).substring(0, 5);
+   }
+%>
+<div class="app-shell">
+    <%- include('../partials/nav', { user, activo: 'reservas' }) %>
+
+    <main class="content content-narrow">
+        <div class="page-head">
+            <h1>Pago</h1>
+            <p class="muted">Completa el pago para activar tu reserva.</p>
+        </div>
+
+        <% if (flash.error) { %><div class="alert alert-error"><%= flash.error %></div><% } %>
+
+        <!-- Resumen de la reserva -->
+        <div class="panel-card resumen-pago">
+            <h3>Resumen</h3>
+            <div class="resumen-row"><span>Estacionamiento</span><strong><%= espacio.nombre_estacionamiento %></strong></div>
+            <div class="resumen-row"><span>Espacio</span><strong><%= espacio.numero_espacio %> (<%= espacio.nombre_tipo %>)</strong></div>
+            <div class="resumen-row"><span>Fecha</span><strong><%= new Date(reserva.fecha_reserva).toLocaleDateString() %></strong></div>
+            <div class="resumen-row"><span>Horario</span><strong><%= horaInicioStr %> - <%= horaFinStr %></strong></div>
+            <% if (espacio.precio_hora) { %>
+                <div class="resumen-row"><span>Tarifa</span><strong>$<%= espacio.precio_hora %> / hora</strong></div>
+            <% } %>
+            <div class="resumen-row resumen-total"><span>Total a pagar</span><strong>$<%= costo.toFixed(2) %></strong></div>
+        </div>
+
+        <!-- Formulario de pago simulado -->
+        <div class="panel-card">
+            <h3>Datos de la tarjeta</h3>
+            <p class="muted small">Esto es una simulacion academica. No se procesa ningun pago real.</p>
+
+            <form action="/pagos" method="POST" id="pagoForm">
+                <input type="hidden" name="id_reserva" value="<%= reserva.id_reserva %>">
+                <input type="hidden" name="monto" value="<%= costo.toFixed(2) %>">
+
+                <!-- Selector Visa / MasterCard -->
+                <div class="card-options">
+                    <% metodos.forEach(function(m, i) {
+                         var marca = m.nombre_metodo.toLowerCase();
+                    %>
+                        <label class="card-option card-<%= marca %>">
+                            <input type="radio" name="id_metodo_pago" value="<%= m.id_metodo_pago %>"
+                                   data-marca="<%= m.nombre_metodo %>" <%= i === 0 ? 'checked' : '' %> required>
+                            <span class="card-brand"><%= m.nombre_metodo %></span>
+                        </label>
+                    <% }); %>
+                </div>
+                <input type="hidden" name="tipo_tarjeta" id="tipoTarjeta" value="<%= metodos[0] ? metodos[0].nombre_metodo : 'Visa' %>">
+
+                <div class="form-group">
+                    <label for="numero_tarjeta">Numero de tarjeta</label>
+                    <input type="text" id="numero_tarjeta" name="numero_tarjeta"
+                           placeholder="1234 5678 9012 3456" maxlength="19" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="titular">Nombre del titular</label>
+                    <input type="text" id="titular" name="titular" placeholder="Como aparece en la tarjeta" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fecha_expiracion">Expiracion</label>
+                        <input type="date" id="fecha_expiracion" name="fecha_expiracion" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="4" pattern="\d{3,4}" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-gradient">
+                    <span>Pagar $<%= costo.toFixed(2) %></span>
+                    <span class="btn-arrow">&rarr;</span>
+                </button>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Formateo automatico del numero de tarjeta (1234 5678 ...)
+    var input = document.getElementById('numero_tarjeta');
+    if (input) {
+        input.addEventListener('input', function (e) {
+            var v = e.target.value.replace(/\D/g, '').slice(0, 16);
+            e.target.value = v.replace(/(.{4})/g, '$1 ').trim();
+        });
+    }
+    // Sincroniza el hidden tipo_tarjeta cuando cambia el radio
+    document.querySelectorAll('input[name="id_metodo_pago"]').forEach(function (r) {
+        r.addEventListener('change', function () {
+            document.getElementById('tipoTarjeta').value = r.dataset.marca;
+        });
+    });
+</script>
+<%- include('../partials/footer') %>
